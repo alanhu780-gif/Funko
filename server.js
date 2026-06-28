@@ -220,6 +220,45 @@ app.post("/api/identify", async (req, res) => {
 
 // ---- listing + market value -----------------------------------------------
 
+const GOOD_CONDITIONS = ["Mint", "Near Mint"];
+
+// eBay condition code: New (1000) only for a sealed/mint in-box figure; else Used (3000).
+function ebayCondition(c) {
+  if (
+    c.boxIncluded &&
+    GOOD_CONDITIONS.includes(c.boxCondition) &&
+    GOOD_CONDITIONS.includes(c.figureCondition)
+  ) {
+    return { id: 1000, text: "New" };
+  }
+  return { id: 3000, text: "Used" };
+}
+
+// Facebook Marketplace condition wording.
+function facebookCondition(c) {
+  if (
+    c.boxIncluded &&
+    GOOD_CONDITIONS.includes(c.boxCondition) &&
+    GOOD_CONDITIONS.includes(c.figureCondition)
+  ) {
+    return "New";
+  }
+  if (GOOD_CONDITIONS.includes(c.figureCondition)) return "Used - Like New";
+  if (c.figureCondition === "Good") return "Used - Good";
+  return "Used - Fair";
+}
+
+// "Features" specific, combining variant / exclusive / chase for eBay item specifics.
+function featuresString(item) {
+  return [
+    item.variant && item.variant !== "Standard" ? item.variant : "",
+    item.exclusivity && item.exclusivity !== "Common" ? item.exclusivity : "",
+    item.isChase ? "Chase" : "",
+  ]
+    .filter(Boolean)
+    .join(", ");
+}
+
 app.post("/api/generate-listing", async (req, res) => {
   try {
     const item = req.body.item || {};
@@ -235,9 +274,8 @@ app.post("/api/generate-listing", async (req, res) => {
     ]
       .filter(Boolean)
       .join(" ");
-    const ebay = ebayUrls(query);
 
-    const prompt = `You are helping me write a marketplace listing for a Funko Pop I'm selling, and find its current market value.
+    const prompt = `You are helping me sell a Funko Pop. I list on TWO platforms with different audiences, so write SEPARATE copy for each, and find the current market value.
 
 Confirmed item:
 - Character: ${item.character || ""}
@@ -254,18 +292,24 @@ Condition (from me):
 - Figure condition: ${condition.figureCondition || "unspecified"}
 - Extra notes: ${condition.notes || "none"}
 
-Use web search to find what this exact figure (matching the variant/exclusive) has recently SOLD for — prefer eBay sold/completed listings. Be careful not to quote prices for a different variant.
+Use web search to find what this EXACT figure (matching the variant/exclusive) has recently SOLD for — prefer eBay sold/completed listings. Do not quote prices for a different variant.
 
-Then respond with ONLY a JSON object (no prose before or after) of this exact shape:
+Platform styles:
+- eBay buyers search by keywords. Make the eBay title keyword-dense within 80 characters (character, franchise, "Funko Pop", number, variant/exclusive, condition cue). The eBay description should be structured and detailed, mention condition honestly, and read like a professional collectibles listing.
+- Facebook Marketplace buyers are local and casual. Make the Facebook title short and natural; the description friendly and first-person, mentioning pickup/shipping, kept concise.
+
+Respond with ONLY a JSON object (no prose before or after) of this exact shape:
 {
-  "title": "an 80-char-max marketplace title (include character, line, number, variant/exclusive)",
-  "description": "a polished 2-4 short-paragraph listing description, accurate to the condition above, written to sell honestly",
-  "conditionSummary": "one-line condition grade for the listing",
+  "ebayTitle": "<=80 char keyword-rich title",
+  "ebayDescription": "detailed eBay listing description, honest to the condition",
+  "facebookTitle": "short casual title",
+  "facebookDescription": "friendly first-person Marketplace description",
+  "itemSpecifics": { "Character": "", "Franchise": "", "ReleaseYear": "" },
   "priceLow": number,
   "priceHigh": number,
   "priceTypical": number,
   "currency": "USD",
-  "pricingNotes": "1-2 sentences on what drives the value and how confident the estimate is",
+  "pricingNotes": "1-2 sentences on what drives the value and confidence",
   "comps": [ { "title": "what sold", "price": number, "source": "where, e.g. eBay sold" } ]
 }`;
 
@@ -287,9 +331,41 @@ Then respond with ONLY a JSON object (no prose before or after) of this exact sh
         .status(502)
         .json({ error: "Could not parse the listing. Try again." });
     }
-    const data = JSON.parse(jsonStr);
-    data.ebay = ebay;
-    res.json(data);
+    const m = JSON.parse(jsonStr);
+    const specifics = m.itemSpecifics || {};
+    const eCond = ebayCondition(condition);
+
+    res.json({
+      pricing: {
+        priceLow: m.priceLow,
+        priceHigh: m.priceHigh,
+        priceTypical: m.priceTypical,
+        currency: m.currency || "USD",
+        pricingNotes: m.pricingNotes || "",
+        comps: m.comps || [],
+      },
+      ebay: {
+        title: m.ebayTitle || "",
+        description: m.ebayDescription || "",
+        conditionId: eCond.id,
+        conditionText: eCond.text,
+        itemSpecifics: {
+          Brand: "Funko",
+          Type: "Pop! Vinyl",
+          Character: specifics.Character || item.character || "",
+          Franchise: specifics.Franchise || item.line || "",
+          Features: featuresString(item),
+          ReleaseYear: specifics.ReleaseYear || item.estimatedYear || "",
+        },
+      },
+      facebook: {
+        title: m.facebookTitle || "",
+        description: m.facebookDescription || "",
+        condition: facebookCondition(condition),
+        category: "Toys & Games",
+      },
+      ebayLinks: ebayUrls(query),
+    });
   } catch (err) {
     console.error("listing error:", err.message);
     res.status(500).json({ error: err.message || "Listing generation failed." });

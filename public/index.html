@@ -68,32 +68,95 @@
 
       <!-- Step 3: result -->
       <section id="step-result" class="card hidden">
-        <h2><span class="step">3</span> Your listing</h2>
-
-        <div class="field">
-          <div class="field-head"><strong>Title</strong><button class="copy" data-copy="r-title">Copy</button></div>
-          <div id="r-title" class="value"></div>
-        </div>
-
-        <div class="field">
-          <div class="field-head"><strong>Description</strong><button class="copy" data-copy="r-description">Copy</button></div>
-          <div id="r-description" class="value pre"></div>
-        </div>
+        <h2><span class="step">3</span> Your listings</h2>
 
         <div class="price">
-          <div><span class="label">Suggested price</span>
-            <span id="r-price" class="price-main"></span></div>
+          <div>
+            <span class="label">Suggested price (from sold comps)</span>
+            <span id="r-price" class="price-main"></span>
+          </div>
           <div id="r-pricingNotes" class="muted"></div>
+          <label class="priceset">Your asking price
+            <span class="cur">$</span><input id="r-askPrice" type="number" step="0.01" min="0" />
+          </label>
         </div>
 
         <div id="comps" class="comps"></div>
 
-        <div class="links">
-          <a id="ebaySold" class="btn" target="_blank" rel="noopener">Verify on eBay (sold listings)</a>
-          <a id="ebayActive" class="btn ghost" target="_blank" rel="noopener">See active listings</a>
+        <label class="wide imgurls">Image URLs for bulk upload <span class="muted">(optional — only if your photos are hosted online; otherwise attach them in each platform)</span>
+          <input id="r-imageUrls" placeholder="https://…  https://…  (space or comma separated)" />
+        </label>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="ebay">eBay</button>
+          <button class="tab" data-tab="facebook">Facebook</button>
         </div>
 
-        <button id="restartBtn" class="ghost">Start another item</button>
+        <!-- eBay panel -->
+        <div id="panel-ebay" class="panel">
+          <div class="field">
+            <div class="field-head"><strong>Title</strong> <span id="eb-title-len" class="muted"></span><button class="copy" data-copy="eb-title">Copy</button></div>
+            <div id="eb-title" class="value"></div>
+          </div>
+          <div class="field">
+            <div class="field-head"><strong>Description</strong><button class="copy" data-copy="eb-description">Copy</button></div>
+            <div id="eb-description" class="value pre"></div>
+          </div>
+          <div class="field">
+            <div class="field-head"><strong>Condition / Item specifics</strong></div>
+            <div id="eb-specifics" class="value specifics"></div>
+          </div>
+          <div class="links">
+            <a id="ebaySold" class="btn ghost" target="_blank" rel="noopener">Check eBay sold comps</a>
+            <a id="ebayActive" class="btn ghost" target="_blank" rel="noopener">Active listings</a>
+          </div>
+        </div>
+
+        <!-- Facebook panel -->
+        <div id="panel-facebook" class="panel hidden">
+          <div class="field">
+            <div class="field-head"><strong>Title</strong><button class="copy" data-copy="fb-title">Copy</button></div>
+            <div id="fb-title" class="value"></div>
+          </div>
+          <div class="field">
+            <div class="field-head"><strong>Description</strong><button class="copy" data-copy="fb-description">Copy</button></div>
+            <div id="fb-description" class="value pre"></div>
+          </div>
+          <div class="field">
+            <div class="field-head"><strong>Category / Condition</strong></div>
+            <div id="fb-meta" class="value specifics"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="saveBatchBtn" class="primary">Save to batch &amp; do next</button>
+          <button id="restartBtn" class="ghost">Discard &amp; start another</button>
+        </div>
+      </section>
+
+      <!-- Batch / export -->
+      <section id="batch" class="card hidden">
+        <h2>Batch <span id="batchCount" class="count"></span></h2>
+        <ul id="batchList" class="batchlist"></ul>
+
+        <details class="exset">
+          <summary>eBay export settings</summary>
+          <div class="grid">
+            <label>eBay category ID
+              <input id="set-category" />
+            </label>
+            <label>Item location (city, ZIP)
+              <input id="set-location" placeholder="e.g. Austin, 78701" />
+            </label>
+          </div>
+          <p class="muted">Default category 149372 is eBay's "Pop! Vinyl". Confirm it matches your account before uploading.</p>
+        </details>
+
+        <div class="links">
+          <button id="dlEbay" class="btn">Download eBay File Exchange CSV</button>
+          <button id="dlFacebook" class="btn ghost">Download Facebook spreadsheet (CSV)</button>
+          <button id="clearBatch" class="btn ghost danger">Clear batch</button>
+        </div>
       </section>
 
       <div id="error" class="error hidden"></div>

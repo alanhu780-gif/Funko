@@ -92,6 +92,29 @@ input, select {
 .comps .comp span:last-child { color: var(--ok); font-weight: 600; }
 .links { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .error { background: rgba(255,99,71,.12); border: 1px solid rgba(255,99,71,.4); color: #ff8a73; padding: 12px 14px; border-radius: 10px; margin: 16px 0; }
+.priceset { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 13px; color: var(--muted); }
+.priceset .cur { margin-left: 4px; color: var(--text); }
+.priceset input { width: 120px; }
+.imgurls { display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: var(--muted); margin: 16px 0; }
+.imgurls input { width: 100%; }
+.tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); margin: 18px 0 16px; }
+.tab { background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 9px 16px; font-size: 15px; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab.active { color: var(--text); border-bottom-color: var(--accent); }
+.panel .specifics { font-size: 13px; }
+.specifics .row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid var(--line); }
+.specifics .row:last-child { border-bottom: none; }
+.specifics .row span:first-child { color: var(--muted); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.count { background: var(--accent); color: #fff; border-radius: 20px; padding: 1px 10px; font-size: 13px; vertical-align: middle; }
+.batchlist { list-style: none; margin: 0 0 16px; padding: 0; }
+.batchlist li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.batchlist .bi-price { color: var(--ok); font-weight: 600; }
+.batchlist button { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 16px; }
+.batchlist button:hover { color: #ff6347; }
+.exset { margin: 4px 0 16px; border: 1px solid var(--line); border-radius: 10px; padding: 4px 14px; }
+.exset summary { cursor: pointer; padding: 8px 0; color: var(--muted); }
+.exset .grid { margin: 8px 0; }
+.btn.danger { color: #ff8a73; }
 .hidden { display: none !important; }
 .spinner {
   position: fixed; inset: 0; background: rgba(8,9,12,.7); backdrop-filter: blur(2px);
