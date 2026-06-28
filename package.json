@@ -1,0 +1,15 @@
+{
+  "name": "funko-lister",
+  "version": "1.0.0",
+  "description": "Photos -> identified Funko Pop -> listing description + market value. Local web app powered by Claude.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

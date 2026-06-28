@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Funko Lister</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Funko Lister</h1>
+      <p class="sub">Drop your photos &rarr; confirm the figure &rarr; copy a listing with a price.</p>
+    </header>
+
+    <main>
+      <!-- Step 1: photos -->
+      <section id="step-photos" class="card">
+        <h2><span class="step">1</span> Photos of one figure</h2>
+        <div id="dropzone" class="dropzone">
+          <p>Drag &amp; drop 7&ndash;10 photos here, or <label class="link" for="fileInput">browse</label>.</p>
+          <input id="fileInput" type="file" accept="image/*" multiple hidden />
+        </div>
+        <div id="thumbs" class="thumbs"></div>
+        <button id="identifyBtn" class="primary" disabled>Identify this Funko</button>
+      </section>
+
+      <!-- Step 2: confirm -->
+      <section id="step-confirm" class="card hidden">
+        <h2><span class="step">2</span> Confirm &amp; correct</h2>
+        <div id="confidence" class="badge"></div>
+        <p id="identifyingDetails" class="muted"></p>
+
+        <div id="alternatives" class="alts hidden">
+          <h3>Could it be one of these instead?</h3>
+          <ul id="altList"></ul>
+        </div>
+
+        <div class="grid">
+          <label>Character<input id="f-character" /></label>
+          <label>Line / Series<input id="f-line" /></label>
+          <label>Collector #<input id="f-itemNumber" /></label>
+          <label>Variant<input id="f-variant" /></label>
+          <label>Exclusivity<input id="f-exclusivity" /></label>
+          <label>Approx. year<input id="f-estimatedYear" /></label>
+          <label class="check"><input id="f-isChase" type="checkbox" /> Chase variant</label>
+        </div>
+
+        <h3>Condition</h3>
+        <div class="grid">
+          <label class="check"><input id="c-boxIncluded" type="checkbox" checked /> Box included</label>
+          <label>Box condition
+            <select id="c-boxCondition">
+              <option>Mint</option><option>Near Mint</option>
+              <option selected>Good</option><option>Fair</option><option>Poor / No box</option>
+            </select>
+          </label>
+          <label>Figure condition
+            <select id="c-figureCondition">
+              <option selected>Mint</option><option>Near Mint</option>
+              <option>Good</option><option>Played with / Loose</option>
+            </select>
+          </label>
+          <label class="wide">Notes (flaws, smoke-free home, etc.)<input id="c-notes" /></label>
+        </div>
+
+        <button id="generateBtn" class="primary">Write listing &amp; find value</button>
+      </section>
+
+      <!-- Step 3: result -->
+      <section id="step-result" class="card hidden">
+        <h2><span class="step">3</span> Your listing</h2>
+
+        <div class="field">
+          <div class="field-head"><strong>Title</strong><button class="copy" data-copy="r-title">Copy</button></div>
+          <div id="r-title" class="value"></div>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><strong>Description</strong><button class="copy" data-copy="r-description">Copy</button></div>
+          <div id="r-description" class="value pre"></div>
+        </div>
+
+        <div class="price">
+          <div><span class="label">Suggested price</span>
+            <span id="r-price" class="price-main"></span></div>
+          <div id="r-pricingNotes" class="muted"></div>
+        </div>
+
+        <div id="comps" class="comps"></div>
+
+        <div class="links">
+          <a id="ebaySold" class="btn" target="_blank" rel="noopener">Verify on eBay (sold listings)</a>
+          <a id="ebayActive" class="btn ghost" target="_blank" rel="noopener">See active listings</a>
+        </div>
+
+        <button id="restartBtn" class="ghost">Start another item</button>
+      </section>
+
+      <div id="error" class="error hidden"></div>
+    </main>
+
+    <div id="spinner" class="spinner hidden"><div class="dot"></div><span id="spinnerMsg"></span></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
