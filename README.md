@@ -19,6 +19,10 @@ Drop in the 7–10 photos you took of a Funko Pop, and it will:
 Everything runs on your own machine. Your Anthropic API key stays on the local server
 and is never exposed to the browser.
 
+> **New to this / no coding experience?** Follow **[SETUP-WINDOWS.md](SETUP-WINDOWS.md)** —
+> a plain-English, click-by-click guide. On Windows you can just double-click
+> **`Start Funko Lister.bat`**, which installs everything and asks for your key once.
+
 ## Setup
 
 You need [Node.js](https://nodejs.org) 18 or newer.
